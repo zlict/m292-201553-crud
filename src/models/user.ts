@@ -5,3 +5,10 @@ export type User = {
     birthday: string,
     active: boolean
 }
+
+export const defaultUser: Omit<User, 'id'> = {
+    forename: '',
+    surname: '',
+    birthday: '',
+    active: false
+} 

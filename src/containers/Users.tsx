@@ -4,6 +4,8 @@ import { UserForm } from '../components/users/UserForm';
 import { UserIndex } from '../components/users/UserIndex';
 
 export const UsersContainer: React.FC = () => {
+    const [formKey, setFormKey] = useState(0);
+    const [currentUser, setCurrentUser] = useState<User>();
     const [users, setUsers] = useState<User[]>([
         { 
             id: 1,
@@ -26,14 +28,39 @@ export const UsersContainer: React.FC = () => {
         }
     ]);
 
-    const onDelete = (id: number) => {
+    const resetForm = () => {
+        setCurrentUser(undefined);
+    }
+
+    const rerenderForm = () => {
+        setFormKey(new Date().getTime());
+    }
+
+    const handleDelete = (id: number) => {
         setUsers(users.filter((u) => u.id !== id));
+    }
+
+    const handleSubmit = (user: User) => {
+        if(currentUser) {
+            // update
+            setUsers(users.map((u) => u.id === user.id ? user : u));
+        } else {
+            // create
+            setUsers([...users, user]);
+        }
+        resetForm();
+        rerenderForm();
+    }
+
+    const handleEdit = (id: number) => {
+        setCurrentUser(users.find((u) => u.id === id));
+        rerenderForm();
     }
 
     return (
         <div>
-            <UserForm />
-            <UserIndex users={users} onDelete={onDelete} />
+            <UserForm onSubmit={handleSubmit} initialUser={currentUser} key={formKey} />
+            <UserIndex users={users} onDelete={handleDelete} onEdit={handleEdit} />
         </div>
     );
 }

@@ -4,13 +4,10 @@ import { User } from '../../models/user';
 type Props = {
     users: User[];
     onDelete: (id: number) => void;
+    onEdit: (id: number) => void;
 } 
 
 export const UserIndex: React.FC<Props> = (props) => {
-    const handleDelete = (id: number) => {
-        props.onDelete(id);
-    }
-
     return (
         <table>
             <thead>
@@ -30,9 +27,10 @@ export const UserIndex: React.FC<Props> = (props) => {
                         <td>{u.forename}</td>
                         <td>{u.surname}</td>
                         <td>{u.birthday}</td>
-                        <td>{u.active}</td>
+                        <td><input type="checkbox" checked={u.active} disabled /></td>
                         <td>
-                            <button onClick={() => handleDelete(u.id)}>Delete</button>
+                            <button onClick={() => props.onDelete(u.id)}>Delete</button>
+                            <button onClick={() => props.onEdit(u.id)}>Edit</button>
                         </td>
                     </tr>
                 ))}
