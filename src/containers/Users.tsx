@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { User } from '../models/user';
 import { UserForm } from '../components/users/UserForm';
 import { UserIndex } from '../components/users/UserIndex';
+import { Dialog } from '../components/Dialog';
 
 export const UsersContainer: React.FC = () => {
     const [formKey, setFormKey] = useState(0);
+    const [isDialog, setDialog] = useState(false)
     const [currentUser, setCurrentUser] = useState<User>();
     const [users, setUsers] = useState<User[]>([
         { 
@@ -50,16 +52,25 @@ export const UsersContainer: React.FC = () => {
         }
         resetForm();
         rerenderForm();
+        toggleDialog();
     }
 
     const handleEdit = (id: number) => {
         setCurrentUser(users.find((u) => u.id === id));
         rerenderForm();
+        toggleDialog();
+    }
+
+    const toggleDialog = () => {
+        setDialog(!isDialog);
     }
 
     return (
         <div>
-            <UserForm onSubmit={handleSubmit} initialUser={currentUser} key={formKey} />
+            <button onClick={toggleDialog}>Create</button>
+            <Dialog open={isDialog}>
+                <UserForm onSubmit={handleSubmit} initialUser={currentUser} key={formKey} onCancel={toggleDialog} />
+            </Dialog>
             <UserIndex users={users} onDelete={handleDelete} onEdit={handleEdit} />
         </div>
     );

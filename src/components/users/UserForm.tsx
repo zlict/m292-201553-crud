@@ -3,6 +3,7 @@ import { User, defaultUser } from '../../models/user';
 
 type Props = {
     onSubmit: (user: User) => void;
+    onCancel?: () => void;
     initialUser?: User;
 }
 
@@ -35,6 +36,7 @@ export const UserForm: React.FC<Props> = (props) => {
             <label htmlFor="active">Active</label>
             <input type="checkbox" id="active" name="active" onChange={handleChange} checked={currentUser.active} />
             <button type="submit">Submit</button>
+            {props.onCancel && <button type="reset" onClick={props.onCancel}>Cancel</button>}
         </form>
     );
 }
