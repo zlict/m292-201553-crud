@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '../models/user';
 import { UserForm } from '../components/users/UserForm';
 import { UserIndex } from '../components/users/UserIndex';
@@ -8,27 +8,18 @@ export const UsersContainer: React.FC = () => {
     const [formKey, setFormKey] = useState(0);
     const [isDialog, setDialog] = useState(false)
     const [currentUser, setCurrentUser] = useState<User>();
-    const [users, setUsers] = useState<User[]>([
-        { 
-            id: 1,
-            forename: 'Chuck', 
-            surname: 'Norris', 
-            birthday: new Date('1/1/1940').toISOString(), 
-            active: false
-        }, {
-            id: 2,
-            forename: 'Scarlett', 
-            surname: 'Johanson', 
-            birthday: new Date('1/1/1980').toISOString(), 
-            active: true
-        }, {
-            id: 3,
-            forename: 'Viola',
-            surname: 'Amherd',
-            birthday: new Date('1/1/1960').toISOString(), 
-            active: true
-        }
-    ]);
+    const [users, setUsers] = useState<User[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        setLoading(true);
+        fetch('http://localhost:3044/users')
+            .then(response => response.json())
+            .then(data => {
+                setUsers(data);
+                setLoading(false);
+            })
+    }, [])
 
     const resetForm = () => {
         setCurrentUser(undefined);
@@ -39,7 +30,12 @@ export const UsersContainer: React.FC = () => {
     }
 
     const handleDelete = (id: number) => {
-        setUsers(users.filter((u) => u.id !== id));
+        fetch(`http://localhost:3044/users/${id}`, { method: 'DELETE' })
+            .then(response => {
+                if(response.status === 200) {
+                    setUsers(users.filter((u) => u.id !== id));
+                }
+            });
     }
 
     const handleSubmit = (user: User) => {
@@ -67,11 +63,15 @@ export const UsersContainer: React.FC = () => {
 
     return (
         <div>
-            <button onClick={toggleDialog}>Create</button>
-            <Dialog open={isDialog}>
-                <UserForm onSubmit={handleSubmit} initialUser={currentUser} key={formKey} onCancel={toggleDialog} />
-            </Dialog>
-            <UserIndex users={users} onDelete={handleDelete} onEdit={handleEdit} />
+            {loading ? 'Loading' : 
+                <>
+                    <button onClick={toggleDialog}>Create</button>
+                    <Dialog open={isDialog}>
+                        <UserForm onSubmit={handleSubmit} initialUser={currentUser} key={formKey} onCancel={toggleDialog} />
+                    </Dialog>
+                    <UserIndex users={users} onDelete={handleDelete} onEdit={handleEdit} />
+                </>
+            }
         </div>
     );
 }

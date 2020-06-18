@@ -1,0 +1,23 @@
+{
+    "users": [
+        { 
+            "id": 1,
+            "forename": "Chuck", 
+            "surname": "Norris", 
+            "birthday": "01-01-1940", 
+            "active": false
+        }, {
+            "id": 2,
+            "forename": "Scarlett", 
+            "surname": "Johanson", 
+            "birthday": "01-01-1980", 
+            "active": true
+        }, {
+            "id": 3,
+            "forename": "Viola",
+            "surname": "Amherd",
+            "birthday": "01-01-1960", 
+            "active": true
+        }
+    ]
+}
